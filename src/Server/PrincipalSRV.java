@@ -1,6 +1,7 @@
 package Server;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,24 +21,33 @@ public class PrincipalSRV {
 	public static void main(String[] args) throws IOException {
 		// Cria um serviço Socket
 		servidor = new ServerSocket(porta);
-		
+
 		String endereco = InetAddress.getByName("localhost").getHostAddress();
 		do {
-			System.out.println("Servidor ("+ endereco +") aguardando conexão na porta " + porta);
+			System.out.println("Servidor (" + endereco + ") aguardando conexão na porta " + porta);
 			// Aguarda pedido de conexão
 			Socket cliente = servidor.accept();
 			System.out.println("Nova conexão: " + cliente.getInetAddress().getHostAddress());
 
 			// Recebe pacotes do cliente
 			Scanner scanner = new Scanner(cliente.getInputStream());
+			PrintStream saida = new PrintStream(cliente.getOutputStream());
+			
 			while (scanner.hasNextLine()) {
 				dt = new Date();
 				mensagem = scanner.nextLine();
-				if("/FECHAR".equals(mensagem.toUpperCase())){
+				System.out.println(df.format(dt) + ": " + mensagem);
+				
+				switch (mensagem.toUpperCase()) {
+				case "/FECHAR":
 					SRVContinuar = false;
 					break;
-				}else {
-					System.out.println(df.format(dt) + ": " + mensagem);
+				case "/DATA":
+					saida.println(df.format(dt));
+					break;
+
+				default:
+					break;
 				}
 			}
 			System.out.println("Desconectando cliente....");
