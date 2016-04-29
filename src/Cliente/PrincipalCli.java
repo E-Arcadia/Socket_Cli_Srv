@@ -2,6 +2,7 @@ package Cliente;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,6 +11,8 @@ import java.util.Date;
 import java.util.Scanner;
 
 import javax.swing.SingleSelectionModel;
+
+import Entidade.Pessoa;
 
 public class PrincipalCli {
 	private static String mensagem = null;
@@ -54,6 +57,20 @@ public class PrincipalCli {
 				break;
 			case "/HORA":
 				System.out.println("Recebido do Servidor:" + recebidoSRV.nextLine());
+				break;
+			case "/INSERE":
+				Pessoa umaPessoa = new Pessoa();
+				System.out.println("Digite o ID: ");
+				umaPessoa.setId(teclado.nextLine());
+				
+				System.out.println("Digite o Nome: ");
+				umaPessoa.setNome(teclado.nextLine());
+				
+				System.out.println("Digite o E-Mail: ");
+				umaPessoa.setEmail(teclado.nextLine());
+				
+				ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
+		        output.writeObject(umaPessoa);
 				break;
 
 			case "/SAIR":

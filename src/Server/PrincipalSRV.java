@@ -1,6 +1,7 @@
 package Server;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -9,6 +10,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+
+import Entidade.Pessoa;
 
 public class PrincipalSRV {
 	private static int porta = 12345;
@@ -20,7 +23,7 @@ public class PrincipalSRV {
 	private static String mensagem = null;
 	private static Boolean SRVContinuar = true;
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		// Cria um serviço Socket
 		servidor = new ServerSocket(porta);
 
@@ -49,6 +52,11 @@ public class PrincipalSRV {
 					break;
 				case "/HORA":
 					saida.println(hf.format(dt));
+					break;
+				case "/INSERE":
+					ObjectInputStream  input = new ObjectInputStream(cliente.getInputStream());
+		            Pessoa mesmaPessoa = (Pessoa) input.readObject();
+		            System.out.println(mesmaPessoa.toString());
 					break;
 				}
 			}
