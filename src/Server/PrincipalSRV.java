@@ -14,7 +14,9 @@ public class PrincipalSRV {
 	private static int porta = 12345;
 	private static ServerSocket servidor = null;
 	private static Date dt = new Date();
-	private static SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private static SimpleDateFormat dhf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private static SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	private static SimpleDateFormat hf = new SimpleDateFormat("HH:mm:ss");
 	private static String mensagem = null;
 	private static Boolean SRVContinuar = true;
 
@@ -36,7 +38,7 @@ public class PrincipalSRV {
 			while (scanner.hasNextLine()) {
 				dt = new Date();
 				mensagem = scanner.nextLine();
-				System.out.println(df.format(dt) + ": " + mensagem);
+				System.out.println(dhf.format(dt) + ": " + mensagem);
 				
 				switch (mensagem.toUpperCase()) {
 				case "/FECHAR":
@@ -45,8 +47,8 @@ public class PrincipalSRV {
 				case "/DATA":
 					saida.println(df.format(dt));
 					break;
-
-				default:
+				case "/HORA":
+					saida.println(hf.format(dt));
 					break;
 				}
 			}

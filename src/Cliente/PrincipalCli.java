@@ -50,12 +50,14 @@ public class PrincipalCli {
 
 			switch (mensagem.toUpperCase()) {
 			case "/DATA":
-				System.out.println("Recebido do Servidor - Tecle ENTER:" 
-						+ recebidoSRV.nextLine());
+				System.out.println("Recebido do Servidor:" + recebidoSRV.nextLine());
+				break;
+			case "/HORA":
+				System.out.println("Recebido do Servidor:" + recebidoSRV.nextLine());
 				break;
 
 			case "/SAIR":
-				System.out.println("Desconectando... Tecle ENTER.");
+				System.out.println("Desconectando...");
 				ContinuaCNX = false;
 				break;
 
@@ -64,7 +66,7 @@ public class PrincipalCli {
 				break;
 			}
 
-		} while (teclado.hasNextLine() && ContinuaCNX);
+		} while (ContinuaCNX);
 
 		System.out.println("\n\nCliente encerrou comunicação!!!");
 		cliente.close();
@@ -77,4 +79,7 @@ public class PrincipalCli {
 		System.out.println("\n Digite sua opção: ");
 		return new Scanner(System.in).nextLine();
 	}
+	
+	
+	
 }
