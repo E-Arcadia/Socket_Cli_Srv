@@ -72,7 +72,9 @@ public class PrincipalCli {
 				ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
 		        output.writeObject(umaPessoa);
 				break;
-
+			case "/LISTA":
+				System.out.println("Servidor Listando...");
+				break;
 			case "/SAIR":
 				System.out.println("Desconectando...");
 				ContinuaCNX = false;
@@ -80,6 +82,7 @@ public class PrincipalCli {
 
 			case "/FECHAR":
 				System.out.println("Servidor encerrado...");
+				ContinuaCNX = false;
 				break;
 			}
 

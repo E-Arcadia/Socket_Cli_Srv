@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -22,6 +23,7 @@ public class PrincipalSRV {
 	private static SimpleDateFormat hf = new SimpleDateFormat("HH:mm:ss");
 	private static String mensagem = null;
 	private static Boolean SRVContinuar = true;
+	private static ArrayList<Pessoa> listaPessoas = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		// Cria um serviço Socket
@@ -57,6 +59,12 @@ public class PrincipalSRV {
 					ObjectInputStream  input = new ObjectInputStream(cliente.getInputStream());
 		            Pessoa mesmaPessoa = (Pessoa) input.readObject();
 		            System.out.println(mesmaPessoa.toString());
+		            listaPessoas.add(mesmaPessoa);
+					break;
+				case "/LISTA":
+					for(Pessoa umaPessoa : listaPessoas){
+						System.out.println(listaPessoas.toString());
+					}
 					break;
 				}
 			}
