@@ -16,14 +16,10 @@ public class Pacote implements Serializable{
 		super();
 	}
 	
-	
-
 	public Pacote(indicativo acao) {
 		super();
 		this.acao = acao;
 	}
-
-
 
 	public Pacote(indicativo acao, Object obj) {
 		super();

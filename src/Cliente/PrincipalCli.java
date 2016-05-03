@@ -17,7 +17,7 @@ public class PrincipalCli {
 	private static Socket cliente;
 	private static Scanner teclado;
 	private static ObjectOutputStream objOutPut;
-	private static ObjectInputStream  objInput;
+	private static ObjectInputStream objInput;
 	private static Pacote novoPacote;
 
 	public static void main(String[] args) {
@@ -25,24 +25,25 @@ public class PrincipalCli {
 		do {
 			switch (menu()) {
 			case "01":
-			case "1": //Conectar
+			case "1": // Conectar
 				try {
 					cliente = new Socket("127.0.0.1", 12345);
 					objOutPut = new ObjectOutputStream(cliente.getOutputStream());
-					objInput = new ObjectInputStream(cliente.getInputStream());
+
 					System.out.println("Conectado...");
 				} catch (IOException e) {
 					System.out.println("Erro de conexão.");
 				}
+
 				break;
 			case "02":
-			case "2": //MENSAGEM
+			case "2": // MENSAGEM
 				System.out.print("Digite sua mensagem: ");
 				mensagem = teclado.nextLine();
-				novoPacote = new Pacote(indicativo.MENSAGEM,new String(mensagem));
+				novoPacote = new Pacote(indicativo.MENSAGEM, new String(mensagem));
 				EnviaRecebePacote(novoPacote);
 				break;
-			
+
 			case "03":
 			case "3": // DATA
 				EnviaRecebePacote(new Pacote(indicativo.DATA));
@@ -56,17 +57,17 @@ public class PrincipalCli {
 				Pessoa umaPessoa = new Pessoa();
 				System.out.println("Digite o ID: ");
 				umaPessoa.setId(teclado.nextLine());
-				
+
 				System.out.println("Digite o Nome: ");
 				umaPessoa.setNome(teclado.nextLine());
-				
+
 				System.out.println("Digite o E-Mail: ");
 				umaPessoa.setEmail(teclado.nextLine());
-				EnviaRecebePacote(new Pacote(indicativo.INSERE,umaPessoa));
+				EnviaRecebePacote(new Pacote(indicativo.INSERE, umaPessoa));
 				break;
 			case "06":
 			case "6": // LISTAR
-				 EnviaRecebePacote(new Pacote(indicativo.LISTA));
+				EnviaRecebePacote(new Pacote(indicativo.LISTA));
 				break;
 			case "07":
 			case "7": // ENCERRA SERVIDOR
@@ -78,7 +79,7 @@ public class PrincipalCli {
 				Encerra = false;
 				break;
 			}
-			
+
 		} while (Encerra);
 		System.out.println("\n\nCliente encerrou comunicação!!!");
 		try {
@@ -87,30 +88,28 @@ public class PrincipalCli {
 			e.printStackTrace();
 		}
 		System.out.println("ENCERRADO");
-		
+
 	}
 
-	
-	
-	private static Pacote EnviaRecebePacote(Pacote novoPacote){
+	private static Pacote EnviaRecebePacote(Pacote novoPacote) {
 		Pacote umPacote = null;
-		
+
 		try {
 			objOutPut.writeObject(novoPacote);
 			System.out.println("Pacote enviado.\n");
 		} catch (IOException e) {
 			System.out.println("Erro ao enviar pacote...");
 		}
-		
-		
+
 		try {
+			objInput = new ObjectInputStream(cliente.getInputStream());
 			umPacote = (Pacote) objInput.readObject();
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		switch (umPacote.getAcaoString()) {
 		case "MENSAGEM":
 			System.out.println("MENSAGEM: " + (String) umPacote.getObj());
@@ -131,11 +130,9 @@ public class PrincipalCli {
 			System.out.println("RESULTADO: " + (String) umPacote.getObj());
 			break;
 		}
-		
+
 		return umPacote;
 	}
-	
-	
 
 	private static String menu() {
 		System.out.println("\n\n  -- MENU --");
@@ -150,7 +147,5 @@ public class PrincipalCli {
 		System.out.println("\n Digite sua opção: ");
 		return new Scanner(System.in).nextLine();
 	}
-	
-	
-	
+
 }
