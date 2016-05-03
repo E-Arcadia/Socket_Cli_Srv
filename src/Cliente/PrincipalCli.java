@@ -21,10 +21,8 @@ public class PrincipalCli {
 	private static Pacote novoPacote;
 
 	public static void main(String[] args) {
+		teclado = new Scanner(System.in);
 		do {
-			teclado = new Scanner(System.in);
-			
-			
 			switch (menu()) {
 			case "01":
 			case "1": //Conectar
