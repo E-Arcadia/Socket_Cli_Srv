@@ -25,10 +25,12 @@ public class PrincipalSRV {
 	private static SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 	private static SimpleDateFormat hf = new SimpleDateFormat("HH:mm:ss");
 	private static String mensagem = null;
-	private static Boolean SRVSair = false;
+	private static Boolean SRVContinuar = true;
+	private static Boolean ComunicacaoContinuar = true;
 	private static ArrayList<Pessoa> listaPessoas = new ArrayList<>();
 	private static ObjectOutputStream objOutPut;
 	private static ObjectInputStream objInput;
+	private static Pacote umPacote;
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		// Cria um serviço Socket
@@ -36,29 +38,29 @@ public class PrincipalSRV {
 
 		String endereco = InetAddress.getByName("localhost").getHostAddress();
 		do {
-			SRVSair = false;
+			SRVContinuar = true;
 			System.out.println("Servidor (" + endereco + ") aguardando conexão na porta " + porta);
 			// Aguarda pedido de conexão
 			cliente = servidor.accept();
 			objInput = new ObjectInputStream(cliente.getInputStream());
+			
 			System.out.println("Nova conexão: " + cliente.getInetAddress().getHostAddress());
 			do {
-
-				Pacote umPacote = null;
-
+				ComunicacaoContinuar = true;
 				try {
 					System.out.println("Aguardando...");
 					umPacote = (Pacote) objInput.readObject();
 				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
+					System.out.println("Cliente desconectou... - ClassNotFoundException");
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					System.out.println("Cliente desconectou...");
+					break;
 				}
-
-				switch (umPacote.getAcaoString()) {
+				String s = (String) umPacote.getAcaoString();
+				switch (s) {
 				case "MENSAGEM":
 					dt = new Date();
-					System.out.println(dhf.format(dt) + ": " + mensagem);
+					System.out.println(dhf.format(dt) + ": " + (String) umPacote.getObj());
 					umPacote.setObj(new String("Ok"));
 					break;
 				case "DATA":
@@ -75,30 +77,36 @@ public class PrincipalSRV {
 					break;
 				case "LISTA":
 					for (Pessoa umaPessoa : listaPessoas) {
-						System.out.println(listaPessoas.toString());
+						System.out.println(umaPessoa.toString());
 					}
 					umPacote.setObj(new String("Ok"));
 					break;
+				case "SAIR":
+					ComunicacaoContinuar = false;
+					umPacote.setObj(new String("Ok"));
+					break;
 				case "FECHAR":
-					SRVSair = true;
+					SRVContinuar = false;
+					ComunicacaoContinuar = false;
 					umPacote.setObj(new String("Ok"));
 					break;
 				}
 
 				Envia(umPacote);
-			} while (cliente.isClosed());
+			} while (ComunicacaoContinuar);
 			System.out.println("Desconectando cliente....");
 			cliente.close();
-		} while (SRVSair);
+		} while (SRVContinuar);
 		System.out.println("O serviço será encerrado!!!!");
 		servidor.close();
 		System.out.println("ENCERRADO");
 	}
 
 	private static void Envia(Pacote umPacote) {
-
 		try {
+			objOutPut = new ObjectOutputStream(cliente.getOutputStream());
 			objOutPut.writeObject(umPacote);
+			objOutPut.flush();
 			System.out.println("Pacote enviado.\n");
 		} catch (IOException e) {
 			System.out.println("Erro ao enviar pacote...");

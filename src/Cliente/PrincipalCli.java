@@ -22,20 +22,35 @@ public class PrincipalCli {
 
 	public static void main(String[] args) {
 		teclado = new Scanner(System.in);
+		Boolean Continua = true;
 		do {
-			switch (menu()) {
+			Continua = true;
+			switch (menuUM()) {
 			case "01":
 			case "1": // Conectar
 				try {
 					cliente = new Socket("127.0.0.1", 12345);
 					objOutPut = new ObjectOutputStream(cliente.getOutputStream());
-
 					System.out.println("Conectado...");
 				} catch (IOException e) {
 					System.out.println("Erro de conexão.");
 				}
-
+				comunica();
 				break;
+			case "09":
+			case "9": // Sair
+				Continua = false;
+				break;
+			}
+			System.out.println("ENCERRADO");
+		} while (Continua);
+
+	}
+
+	private static void comunica() {
+		Boolean Continua = true;
+		do {
+			switch (menu()) {
 			case "02":
 			case "2": // MENSAGEM
 				System.out.print("Digite sua mensagem: ");
@@ -72,27 +87,26 @@ public class PrincipalCli {
 			case "07":
 			case "7": // ENCERRA SERVIDOR
 				EnviaRecebePacote(new Pacote(indicativo.FECHAR));
-				Encerra = false;
+				Continua = false;
 				break;
-			case "09":
-			case "9": // DESCONECTA
-				Encerra = false;
+			case "08":
+			case "8": // DESCONECTA
+				EnviaRecebePacote(new Pacote(indicativo.SAIR));
+				Continua = false;
 				break;
-			}
 
-		} while (Encerra);
+			}
+			
+		} while (Continua);
 		System.out.println("\n\nCliente encerrou comunicação!!!");
 		try {
 			cliente.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("ENCERRADO");
-
 	}
 
 	private static Pacote EnviaRecebePacote(Pacote novoPacote) {
-		Pacote umPacote = null;
 
 		try {
 			objOutPut.writeObject(novoPacote);
@@ -101,6 +115,7 @@ public class PrincipalCli {
 			System.out.println("Erro ao enviar pacote...");
 		}
 
+		Pacote umPacote = null;
 		try {
 			objInput = new ObjectInputStream(cliente.getInputStream());
 			umPacote = (Pacote) objInput.readObject();
@@ -129,21 +144,31 @@ public class PrincipalCli {
 		case "FECHAR":
 			System.out.println("RESULTADO: " + (String) umPacote.getObj());
 			break;
+		case "SAIR":
+			System.out.println("RESULTADO: " + (String) umPacote.getObj());
+			break;
 		}
 
-		return umPacote;
+		return null;
+	}
+
+	private static String menuUM() {
+		System.out.println("\n\n  -- MENU --");
+		System.out.println("01 - Conectar");
+		System.out.println("09 - Sair");
+		System.out.println("\n Digite sua opção: ");
+		return new Scanner(System.in).nextLine();
 	}
 
 	private static String menu() {
 		System.out.println("\n\n  -- MENU --");
-		System.out.println("01 - Conectar");
 		System.out.println("02 - MENSAGEM");
 		System.out.println("03 - DATA");
 		System.out.println("04 - HORA");
 		System.out.println("05 - INSERE");
 		System.out.println("06 - LISTA");
 		System.out.println("07 - Encerra Servidor");
-		System.out.println("09 - Sair");
+		System.out.println("08 - Desconecta");
 		System.out.println("\n Digite sua opção: ");
 		return new Scanner(System.in).nextLine();
 	}
