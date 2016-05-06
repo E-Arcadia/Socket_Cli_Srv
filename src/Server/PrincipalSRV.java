@@ -81,6 +81,9 @@ public class PrincipalSRV {
 					}
 					umPacote.setObj(new String("Ok"));
 					break;
+				case "LISTA_LOCAL":
+					umPacote.setObj(listaPessoas);
+					break;
 				case "SAIR":
 					ComunicacaoContinuar = false;
 					umPacote.setObj(new String("Ok"));

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import Entidade.Pessoa;
@@ -51,24 +52,24 @@ public class PrincipalCli {
 		Boolean Continua = true;
 		do {
 			switch (menu()) {
-			case "02":
-			case "2": // MENSAGEM
+			case "01":
+			case "1":// MENSAGEM
 				System.out.print("Digite sua mensagem: ");
 				mensagem = teclado.nextLine();
 				novoPacote = new Pacote(indicativo.MENSAGEM, new String(mensagem));
 				EnviaRecebePacote(novoPacote);
 				break;
-
-			case "03":
-			case "3": // DATA
+			case "02":
+			case "2": // DATA
 				EnviaRecebePacote(new Pacote(indicativo.DATA));
 				break;
-			case "04":
-			case "4": // HORA
+
+			case "03":
+			case "3": // HORA
 				EnviaRecebePacote(new Pacote(indicativo.HORA));
 				break;
-			case "05":
-			case "5": // INSERE
+			case "04":
+			case "4": // INSERE
 				Pessoa umaPessoa = new Pessoa();
 				System.out.println("Digite o ID: ");
 				umaPessoa.setId(teclado.nextLine());
@@ -80,9 +81,13 @@ public class PrincipalCli {
 				umaPessoa.setEmail(teclado.nextLine());
 				EnviaRecebePacote(new Pacote(indicativo.INSERE, umaPessoa));
 				break;
-			case "06":
-			case "6": // LISTAR
+			case "05":
+			case "5": // LISTAR
 				EnviaRecebePacote(new Pacote(indicativo.LISTA));
+				break;
+			case "06":
+			case "6": //LISTAR_LOCAL
+				EnviaRecebePacote(new Pacote(indicativo.LISTA_LOCAL));
 				break;
 			case "07":
 			case "7": // ENCERRA SERVIDOR
@@ -141,6 +146,13 @@ public class PrincipalCli {
 		case "LISTA":
 			System.out.println("RESULTADO: " + (String) umPacote.getObj());
 			break;
+		case "LISTA_LOCAL":
+			ArrayList<Pessoa> listaPessoas = new ArrayList<>();
+			listaPessoas = (ArrayList<Pessoa>) umPacote.getObj();
+			for(Pessoa umaPessoa : listaPessoas){
+				System.out.println(umaPessoa.toString());	
+			}
+			break;
 		case "FECHAR":
 			System.out.println("RESULTADO: " + (String) umPacote.getObj());
 			break;
@@ -162,11 +174,12 @@ public class PrincipalCli {
 
 	private static String menu() {
 		System.out.println("\n\n  -- MENU --");
-		System.out.println("02 - MENSAGEM");
-		System.out.println("03 - DATA");
-		System.out.println("04 - HORA");
-		System.out.println("05 - INSERE");
-		System.out.println("06 - LISTA");
+		System.out.println("01 - MENSAGEM");
+		System.out.println("02 - DATA");
+		System.out.println("03 - HORA");
+		System.out.println("04 - INSERE");
+		System.out.println("05 - LISTA");
+		System.out.println("06 - LISTAR LOCAL");
 		System.out.println("07 - Encerra Servidor");
 		System.out.println("08 - Desconecta");
 		System.out.println("\n Digite sua opção: ");

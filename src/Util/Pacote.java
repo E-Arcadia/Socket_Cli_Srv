@@ -6,18 +6,19 @@ import java.util.Date;
 
 import Entidade.Pessoa;
 
-public class Pacote implements Serializable{
+public class Pacote implements Serializable {
 	private indicativo acao;
 	private Date data;
 	private Object obj;
-	
-	
+
 	public Pacote() {
 		super();
+		data = new Date();
 	}
-	
+
 	public Pacote(indicativo acao) {
 		super();
+		data = new Date();
 		this.acao = acao;
 	}
 
@@ -35,7 +36,7 @@ public class Pacote implements Serializable{
 	public String getAcaoString() {
 		return acao.toString();
 	}
-	
+
 	public void setAcao(indicativo acao) {
 		this.acao = acao;
 	}
@@ -55,10 +56,6 @@ public class Pacote implements Serializable{
 	public void setObj(Object obj) {
 		this.obj = obj;
 	}
-
-
-
-
 
 	@Override
 	public int hashCode() {
@@ -97,23 +94,20 @@ public class Pacote implements Serializable{
 		return true;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Pacote [acao=" + acao + ", data=" + data + ", obj=" + obj + "]";
 	}
 
-
-
 	public enum indicativo {
-		MENSAGEM, //enviando uma mensagem texto (String).
-		DATA, 	// solicita a data do servidor
-		HORA, 	// solicita a hora do servidor
+		MENSAGEM, // enviando uma mensagem texto (String).
+		DATA, // solicita a data do servidor
+		HORA, // solicita a hora do servidor
 		INSERE, // envia um objeto pessoa ao servidor
-		LISTA, 	// solicita ao servidor que liste as pessoas cadastradas
-		SAIR, 	// cliente desconecta do servidor
-		FECHAR; // encerra o servidor e se desconecta.
+		LISTA, // solicita ao servidor que liste as pessoas cadastradas
+		LISTA_LOCAL, //Solicita ao servidor a colection para listar local
+		SAIR, // cliente desconecta do servidor
+		FECHAR, // encerra o servidor e se desconecta.
 	}
+
 }
-
-
