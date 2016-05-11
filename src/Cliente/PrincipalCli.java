@@ -10,6 +10,7 @@ import java.util.Scanner;
 import Entidade.Pessoa;
 import Util.Pacote;
 import Util.Pacote.indicativo;
+import View.ClienteSwing;
 
 public class PrincipalCli {
 	private static String mensagem = null;
@@ -22,29 +23,30 @@ public class PrincipalCli {
 	private static Pacote novoPacote;
 
 	public static void main(String[] args) {
-		teclado = new Scanner(System.in);
-		Boolean Continua = true;
-		do {
-			Continua = true;
-			switch (menuUM()) {
-			case "01":
-			case "1": // Conectar
-				try {
-					cliente = new Socket("127.0.0.1", 12345);
-					objOutPut = new ObjectOutputStream(cliente.getOutputStream());
-					System.out.println("Conectado...");
-				} catch (IOException e) {
-					System.out.println("Erro de conexão.");
-				}
-				comunica();
-				break;
-			case "09":
-			case "9": // Sair
-				Continua = false;
-				break;
-			}
-			System.out.println("ENCERRADO");
-		} while (Continua);
+		new ClienteSwing();
+//		teclado = new Scanner(System.in);
+//		Boolean Continua = true;
+//		do {
+//			Continua = true;
+//			switch (menuUM()) {
+//			case "01":
+//			case "1": // Conectar
+//				try {
+//					cliente = new Socket("127.0.0.1", 12345);
+//					objOutPut = new ObjectOutputStream(cliente.getOutputStream());
+//					System.out.println("Conectado...");
+//				} catch (IOException e) {
+//					System.out.println("Erro de conexão.");
+//				}
+//				comunica();
+//				break;
+//			case "09":
+//			case "9": // Sair
+//				Continua = false;
+//				break;
+//			}
+//			System.out.println("ENCERRADO");
+//		} while (Continua);
 
 	}
 
@@ -113,53 +115,53 @@ public class PrincipalCli {
 
 	private static Pacote EnviaRecebePacote(Pacote novoPacote) {
 
-		try {
-			objOutPut.writeObject(novoPacote);
-			System.out.println("Pacote enviado.\n");
-		} catch (IOException e) {
-			System.out.println("Erro ao enviar pacote...");
-		}
+//		try {
+//			objOutPut.writeObject(novoPacote);
+//			System.out.println("Pacote enviado.\n");
+//		} catch (IOException e) {
+//			System.out.println("Erro ao enviar pacote...");
+//		}
 
 		Pacote umPacote = null;
-		try {
-			objInput = new ObjectInputStream(cliente.getInputStream());
-			umPacote = (Pacote) objInput.readObject();
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+//		try {
+//			objInput = new ObjectInputStream(cliente.getInputStream());
+//			umPacote = (Pacote) objInput.readObject();
+//		} catch (ClassNotFoundException e1) {
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
 
-		switch (umPacote.getAcaoString()) {
-		case "MENSAGEM":
-			System.out.println("MENSAGEM: " + (String) umPacote.getObj());
-			break;
-		case "DATA":
-			System.out.println("DATA: " + (String) umPacote.getObj());
-			break;
-		case "HORA":
-			System.out.println("HORA: " + (String) umPacote.getObj());
-			break;
-		case "INSERE":
-			System.out.println("RESULTADO: " + (String) umPacote.getObj());
-			break;
-		case "LISTA":
-			System.out.println("RESULTADO: " + (String) umPacote.getObj());
-			break;
-		case "LISTA_LOCAL":
-			ArrayList<Pessoa> listaPessoas = new ArrayList<>();
-			listaPessoas = (ArrayList<Pessoa>) umPacote.getObj();
-			for(Pessoa umaPessoa : listaPessoas){
-				System.out.println(umaPessoa.toString());	
-			}
-			break;
-		case "FECHAR":
-			System.out.println("RESULTADO: " + (String) umPacote.getObj());
-			break;
-		case "SAIR":
-			System.out.println("RESULTADO: " + (String) umPacote.getObj());
-			break;
-		}
+//		switch (umPacote.getAcaoString()) {
+//		case "MENSAGEM":
+//			System.out.println("MENSAGEM: " + (String) umPacote.getObj());
+//			break;
+//		case "DATA":
+//			System.out.println("DATA: " + (String) umPacote.getObj());
+//			break;
+//		case "HORA":
+//			System.out.println("HORA: " + (String) umPacote.getObj());
+//			break;
+//		case "INSERE":
+//			System.out.println("RESULTADO: " + (String) umPacote.getObj());
+//			break;
+//		case "LISTA":
+//			System.out.println("RESULTADO: " + (String) umPacote.getObj());
+//			break;
+//		case "LISTA_LOCAL":
+//			ArrayList<Pessoa> listaPessoas = new ArrayList<>();
+//			listaPessoas = (ArrayList<Pessoa>) umPacote.getObj();
+//			for(Pessoa umaPessoa : listaPessoas){
+//				System.out.println(umaPessoa.toString());	
+//			}
+//			break;
+//		case "FECHAR":
+//			System.out.println("RESULTADO: " + (String) umPacote.getObj());
+//			break;
+//		case "SAIR":
+//			System.out.println("RESULTADO: " + (String) umPacote.getObj());
+//			break;
+//		}
 
 		return null;
 	}
