@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 import Entidade.Pessoa;
 import Util.Pacote;
+import Util.Pacote.indicativo;
 
 public class PrincipalSRV {
 	private static int porta = 12345;
@@ -84,11 +85,11 @@ public class PrincipalSRV {
 				case "LISTA_LOCAL":
 					umPacote.setObj(listaPessoas);
 					break;
-				case "SAIR":
+				case "DESCONECTA":
 					ComunicacaoContinuar = false;
-					umPacote.setObj(new String("Ok"));
+					umPacote.setObj(new String(umPacote.getAcaoString()));
 					break;
-				case "FECHAR":
+				case "ENCERRA":
 					SRVContinuar = false;
 					ComunicacaoContinuar = false;
 					umPacote.setObj(new String("Ok"));

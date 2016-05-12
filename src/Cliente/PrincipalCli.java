@@ -93,12 +93,12 @@ public class PrincipalCli {
 				break;
 			case "07":
 			case "7": // ENCERRA SERVIDOR
-				EnviaRecebePacote(new Pacote(indicativo.FECHAR));
+//				EnviaRecebePacote(new Pacote(indicativo.FECHAR));
 				Continua = false;
 				break;
 			case "08":
 			case "8": // DESCONECTA
-				EnviaRecebePacote(new Pacote(indicativo.SAIR));
+//				EnviaRecebePacote(new Pacote(indicativo.SAIR));
 				Continua = false;
 				break;
 

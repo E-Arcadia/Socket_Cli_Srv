@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import Util.Pacote.indicativo;
+
 public class Rede {
 	private String endereco = null, porta = null;
 	private Socket clienteSocket = null;
@@ -33,7 +35,7 @@ public class Rede {
 		return clienteSocket == null ? false : true;
 	}
 
-	public boolean envia(Object object){
+	public boolean envia(Object object) {
 		try {
 			objOutPut.writeObject(object);
 		} catch (IOException e) {
@@ -41,33 +43,39 @@ public class Rede {
 		}
 		return true;
 	}
-	
-	public boolean desconectar(){
+
+	public boolean desconectar() {
 		try {
 			clienteSocket.close();
-			
+
 		} catch (IOException e) {
 			return false;
 		}
 		return true;
 	}
 
-	public class Recebe implements Runnable{
-		
+	public class Recebe implements Runnable {
+
 		@Override
 		public void run() {
-			try {
-				ObjectInputStream objInput = new ObjectInputStream(clienteSocket.getInputStream());
-				umPacote = (Pacote) objInput.readObject();
-				interfacecliente.retorno(umPacote);
-			} catch (ClassNotFoundException e1) {
-				//e1.printStackTrace();
-			} catch (IOException e1) {
-				//e1.printStackTrace();
-			}
-			
+			Boolean continua = true;
+			do {
+				try {
+					ObjectInputStream objInput = new ObjectInputStream(clienteSocket.getInputStream());
+					umPacote = (Pacote) objInput.readObject();
+					interfacecliente.retorno(umPacote);
+					if(umPacote.getAcao().equals(indicativo.DESCONECTA)){
+						continua = false;
+					}
+				} catch (ClassNotFoundException e1) {
+					// e1.printStackTrace();
+				} catch (IOException e1) {
+					// e1.printStackTrace();
+				}
+			} while (continua);
+
 		}
-		
+
 	}
-	
+
 }

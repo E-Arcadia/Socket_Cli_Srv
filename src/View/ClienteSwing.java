@@ -33,9 +33,10 @@ public class ClienteSwing extends JFrame implements ActionListener, InterfaceCli
 	JPanel panelConexao, panelComunicacao, panelRetorno, panelMensagem;
 	JTextArea txtArea;
 	Boolean mensagemVisivil = false;
+	Pacote novoPacote = null;
 
 	public ClienteSwing() {
-		umaRede = new Rede();
+
 		setTitle("Exemplo de uso de Socket e Thread");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBounds(200, 100, 400, 200);
@@ -129,27 +130,27 @@ public class ClienteSwing extends JFrame implements ActionListener, InterfaceCli
 	private JPanel jpRetorno() {
 		panelRetorno = new JPanel();
 		panelRetorno.setLayout(new FlowLayout());
-		txtArea = new JTextArea(20,30);
+		txtArea = new JTextArea(20, 30);
 		JScrollPane scroll = new JScrollPane(txtArea);
 		panelRetorno.add(scroll);
 
 		return panelRetorno;
 	}
 
-	private JPanel jpMensagem(){
+	// JPanel Mensagem
+	private JPanel jpMensagem() {
 		panelMensagem = new JPanel();
-		panelMensagem.setLayout(new GridLayout(1,2));
+		panelMensagem.setLayout(new GridLayout(1, 2));
 		jtfMensagem = new JTextField(60);
 		panelMensagem.add(jtfMensagem);
-		
+
 		JButton jbMensagem = new JButton("ENVIAR");
 		jbMensagem.setActionCommand("ENVIAR");
 		jbMensagem.addActionListener(this);
 		panelMensagem.add(jbMensagem);
 		return panelMensagem;
 	}
-	
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton botao = (JButton) e.getSource();
@@ -157,12 +158,13 @@ public class ClienteSwing extends JFrame implements ActionListener, InterfaceCli
 		case "CONECTAR":
 			String endereco = jtfIP.getText();
 			String porta = jtfPorta.getText();
+			umaRede = new Rede();
 			if (umaRede.Conectar(this, endereco, porta)) {
 				JOptionPane.showMessageDialog(this, "Conectado ao Servidor");
 				btConectar.setEnabled(false);
 				add(jpComunicacao(), BorderLayout.WEST);
 				remove(panelConexao);
-				add(jpRetorno(),BorderLayout.CENTER);
+				add(jpRetorno(), BorderLayout.CENTER);
 				setSize(500, 400);
 				setVisible(true);
 			} else {
@@ -171,47 +173,61 @@ public class ClienteSwing extends JFrame implements ActionListener, InterfaceCli
 			break;
 
 		case "MENSAGEM":
-			if(mensagemVisivil){
+			if (mensagemVisivil) {
 				remove(panelMensagem);
 				mensagemVisivil = false;
-			}else{
-				add(jpMensagem(),BorderLayout.SOUTH);
+			} else {
+				add(jpMensagem(), BorderLayout.SOUTH);
 				jtfMensagem.requestFocus();
 				mensagemVisivil = true;
 			}
 			setVisible(true);
 			break;
 		case "DATA":
+			novoPacote = new Pacote(indicativo.DATA, "");
+			if (!umaRede.envia(novoPacote)) {
+				JOptionPane.showMessageDialog(this, "Erro de envio");
+			}
 			break;
 		case "HORA":
+			novoPacote = new Pacote(indicativo.HORA, "");
+			if (!umaRede.envia(novoPacote)) {
+				JOptionPane.showMessageDialog(this, "Erro de envio");
+			}
 			break;
 		case "INSERE":
 			break;
 		case "LISTAR":
-			break;
-		case "LISTAR_LOCAL":
-			break;
-		case "ENCERRA":
-			break;
-		case "DESCONECTA":
-			if(umaRede.isConectado()){
-				if(umaRede.desconectar()){
-					remove(panelRetorno);
-					add(panelConexao);
-					btConectar.setEnabled(true);
-					remove(panelComunicacao);
-					setSize(400, 200);
-					setVisible(true);
-				}
-			}
-			break;
-		case "ENVIAR":
-			Pacote novoPacote = new Pacote(indicativo.MENSAGEM, jtfMensagem.getText());
-			if(umaRede.envia(novoPacote)){
-				jtfMensagem.setText("");
-			}else{
+			novoPacote = new Pacote(indicativo.LISTA, "");
+			if (!umaRede.envia(novoPacote)) {
 				JOptionPane.showMessageDialog(this, "Erro de envio");
 			}
+			break;
+		case "LISTAR_LOCAL":
+			novoPacote = new Pacote(indicativo.LISTA_LOCAL, "");
+			if (!umaRede.envia(novoPacote)) {
+				JOptionPane.showMessageDialog(this, "Erro de envio");
+			}
+			break;
+		case "DESCONECTA":
+			txtArea.append("\n\nSolicitação de desconexão enviada... \n\t-- AGUARDE--");
+			umaRede.envia(new Pacote(indicativo.DESCONECTA, ""));
+			break;
+		case "ENVIAR":
+			novoPacote = new Pacote(indicativo.MENSAGEM, jtfMensagem.getText());
+			if (umaRede.envia(novoPacote)) {
+				jtfMensagem.setText("");
+				jtfMensagem.requestFocus();
+			} else {
+				JOptionPane.showMessageDialog(this, "Erro de envio");
+			}
+			break;
+		case "ENCERRA":
+			novoPacote = new Pacote(indicativo.ENCERRA, "");
+			if (!umaRede.envia(novoPacote)) {
+				JOptionPane.showMessageDialog(this, "Erro de envio");
+			}
+			break;
 		case "SAIR":
 			System.exit(0);
 			break;
@@ -224,35 +240,47 @@ public class ClienteSwing extends JFrame implements ActionListener, InterfaceCli
 
 		switch (p.getAcaoString()) {
 		case "MENSAGEM":
-			txtArea.append("MENSAGEM: " + (String) p.getObj());
+			txtArea.append("\nMENSAGEM: " + (String) p.getObj());
 			break;
 		case "DATA":
-			txtArea.append("DATA: " + (String) p.getObj());
+			txtArea.append("\nDATA: " + (String) p.getObj());
 			break;
 		case "HORA":
-			txtArea.append("HORA: " + (String) p.getObj());
+			txtArea.append("\nHORA: " + (String) p.getObj());
 			break;
 		case "INSERE":
-			txtArea.append("RESULTADO: " + (String) p.getObj());
+			txtArea.append("\nRESULTADO: " + (String) p.getObj());
 			break;
 		case "LISTA":
-			txtArea.append("RESULTADO: " + (String) p.getObj());
+			txtArea.append("\nRESULTADO: " + (String) p.getObj());
 			break;
 		case "LISTA_LOCAL":
 			ArrayList<Pessoa> listaPessoas = new ArrayList<>();
 			listaPessoas = (ArrayList<Pessoa>) p.getObj();
 			txtArea.append("\nListando o Recebido");
-			for(Pessoa umaPessoa : listaPessoas){
-				txtArea.append(umaPessoa.toString());	
+			for (Pessoa umaPessoa : listaPessoas) {
+				txtArea.append(umaPessoa.toString());
 			}
 			break;
-		case "FECHAR":
-			txtArea.append("RESULTADO: " + (String) p.getObj());
-			break;
-		case "SAIR":
-			txtArea.append("RESULTADO: " + (String) p.getObj());
+		
+		case "ENCERRA":
+			txtArea.append("\nRESULTADO: " + (String) p.getObj());
+		case "DESCONECTA":
+			umaRede.desconectar();
+			remove(panelRetorno);
+			add(panelConexao);
+			btConectar.setEnabled(true);
+			remove(panelComunicacao);
+			setSize(400, 200);
+			setVisible(true);
+
+			// Retira mensagem
+			if (mensagemVisivil) {
+				remove(panelMensagem);
+				mensagemVisivil = false;
+			}
 			break;
 		}
-		
+
 	}
 }

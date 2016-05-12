@@ -106,8 +106,8 @@ public class Pacote implements Serializable {
 		INSERE, // envia um objeto pessoa ao servidor
 		LISTA, // solicita ao servidor que liste as pessoas cadastradas
 		LISTA_LOCAL, //Solicita ao servidor a colection para listar local
-		SAIR, // cliente desconecta do servidor
-		FECHAR, // encerra o servidor e se desconecta.
+		DESCONECTA, // cliente desconecta do servidor
+		ENCERRA; // encerra o servidor e se desconecta.
 	}
 
 }
